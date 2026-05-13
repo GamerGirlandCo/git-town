@@ -7,6 +7,22 @@
       "request": "launch",
       "mode": "test",
       "program": "${workspaceFolder}"
+    },
+    {
+      "name": "debug ... something",
+      "type": "go",
+      "request": "launch",
+      "program": "${workspaceFolder}",
+      "cwd": "../gitea",
+      "args": ["propose", "-t", "[2/3] subgroups", "-f", "../tmp/base2.md"]
+    },
+    {
+      "name": "debug ... something else",
+      "type": "go",
+      "request": "launch",
+      "program": "${workspaceFolder}",
+      "cwd": "../gitea",
+      "args": ["sync", "-s"]
     }
   ]
 }

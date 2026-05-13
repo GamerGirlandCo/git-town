@@ -17,7 +17,10 @@ type ProposalCreate struct {
 }
 
 func (self *ProposalCreate) Run(args shared.RunArgs) error {
-	parentBranch, hasParentBranch := args.Config.Value.NormalConfig.Lineage.Parent(self.Branch).Get()
+	_, hasParentBranch	:= args.Config.Value.NormalConfig.Lineage.Parent(self.Branch).Get()
+	ancestors := args.Config.Value.NormalConfig.Lineage.Ancestors(self.Branch)
+	parentBranch := gitdomain.LocalBranchName(ancestors.BranchNames()[0])
+	// BranchWith
 	if !hasParentBranch {
 		args.FinalMessages.Addf(messages.ProposalNoParent, self.Branch)
 		return nil
