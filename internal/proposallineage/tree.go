@@ -18,6 +18,17 @@ func (self TreeNode) BranchCount() int {
 	return result
 }
 
+func (self TreeNode) ToLineage() configdomain.Lineage {
+	amap := make(configdomain.LineageData)
+	mapper := func(tn TreeNode, ld configdomain.LineageData) {
+		for _, child := range tn.Children {
+			ld[child.Branch] = tn.Branch	
+		}
+	}
+	mapper(self, amap)
+	return configdomain.NewLineageWith(amap)
+}
+
 // CalculateTree provides the full lineage tree for the given branch,
 // from the perennial root to all leafs that have the given branch as a descendent.
 func CalculateTree(branch gitdomain.LocalBranchName, lineage configdomain.Lineage, order configdomain.Order) TreeNode {

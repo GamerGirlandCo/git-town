@@ -70,8 +70,9 @@ func TestAddProposalsToTree(t *testing.T) {
 				},
 			},
 		}
+
 		var connector forgedomain.Connector = &testFinder2{}
-		have := proposallineage.AddProposalsToTree(tree, Some(connector))
+		have := proposallineage.AddProposalsToTree(tree.ToLineage(), tree, Some(connector))
 		want := proposallineage.TreeNodeWithProposal{
 			Branch: "main",
 			Children: []proposallineage.TreeNodeWithProposal{
@@ -126,7 +127,7 @@ func TestAddProposalsToTree(t *testing.T) {
 			},
 		}
 		var connector forgedomain.Connector = &failingFinder{}
-		have := proposallineage.AddProposalsToTree(tree, Some(connector))
+		have := proposallineage.AddProposalsToTree(tree.ToLineage(), tree, Some(connector))
 		want := proposallineage.TreeNodeWithProposal{
 			Branch: "main",
 			Children: []proposallineage.TreeNodeWithProposal{
@@ -164,7 +165,7 @@ func TestAddProposalsToTree(t *testing.T) {
 			},
 		}
 		var connector forgedomain.Connector = &testFinder2{}
-		have := proposallineage.AddProposalsToTree(tree, Some(connector))
+		have := proposallineage.AddProposalsToTree(tree.ToLineage(), tree, Some(connector))
 		want := proposallineage.TreeNodeWithProposal{
 			Branch: "main",
 			Children: []proposallineage.TreeNodeWithProposal{

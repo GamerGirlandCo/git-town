@@ -46,6 +46,27 @@ func (self *ProposalCreate) Run(args shared.RunArgs) error {
 				args.FinalMessages.Addf(messages.BrowserOpen, existingProposal.Data.Data().URL)
 			}
 			return nil
+		} else {
+			// fall back to searching for PRs with the root of the branch hierarchy as the base
+			if len(ancestors) > 0 {
+				fallbackParent := gitdomain.LocalBranchName(ancestors[0])
+				fallbackProposalOpt, err := proposalFinder.FindProposal(self.Branch, fallbackParent)
+				if err != nil {
+					args.FinalMessages.Addf(messages.ProposalFindProblem, err.Error())
+					goto createProposal
+				}
+				if existingProposal, has := fallbackProposalOpt.Get(); has {
+					if args.Config.Value.NormalConfig.BrowserEnabled {
+						args.PrependOpcodes(
+							&BrowserOpen{
+								URL: existingProposal.Data.Data().URL,
+							},
+						)
+					} else {
+						args.FinalMessages.Addf(messages.BrowserOpen, existingProposal.Data.Data().URL)
+					}
+				}
+			}
 		}
 	}
 

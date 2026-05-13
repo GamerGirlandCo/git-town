@@ -1,6 +1,7 @@
 package proposallineage
 
 import (
+	"github.com/git-town/git-town/v23/internal/config/configdomain"
 	"github.com/git-town/git-town/v23/internal/forge/forgedomain"
 	"github.com/git-town/git-town/v23/internal/git/gitdomain"
 	. "github.com/git-town/git-town/v23/pkg/prelude"
@@ -24,15 +25,19 @@ func (self TreeNodeWithProposal) BranchOrAncestorHasProposal() bool {
 	return false
 }
 
-func AddProposalsToTree(tree TreeNode, connector Option[forgedomain.Connector]) TreeNodeWithProposal {
-	return addProposalsToTreeHelper(tree, None[gitdomain.LocalBranchName](), connector)
+func AddProposalsToTree(lineage configdomain.Lineage, tree TreeNode, connector Option[forgedomain.Connector]) TreeNodeWithProposal {
+	return addProposalsToTreeHelper(lineage, tree, None[gitdomain.LocalBranchName](), connector)
 }
 
-func addProposalsToTreeHelper(tree TreeNode, parent Option[gitdomain.LocalBranchName], connector Option[forgedomain.Connector]) TreeNodeWithProposal {
+func addProposalsToTreeHelper(lineage configdomain.Lineage, tree TreeNode, parent Option[gitdomain.LocalBranchName], connector Option[forgedomain.Connector]) TreeNodeWithProposal {
 	proposal := loadProposal(tree.Branch, parent, connector)
+	if proposal.IsNone() {
+		ancestors := lineage.Ancestors(tree.Branch)
+		proposal = loadProposal(tree.Branch, Some(ancestors[0]), connector)
+	}
 	children := make([]TreeNodeWithProposal, len(tree.Children))
 	for i, child := range tree.Children {
-		children[i] = addProposalsToTreeHelper(child, Some(tree.Branch), connector)
+		children[i] = addProposalsToTreeHelper(lineage, child, Some(tree.Branch), connector)
 	}
 	return TreeNodeWithProposal{
 		Branch:   tree.Branch,

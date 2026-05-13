@@ -4,5 +4,6 @@
   ],
   "cucumber.glue": [
     "internal/test/cucumber/steps.go"
-  ]
+  ],
+  "nuxt.isNuxtApp": false
 }

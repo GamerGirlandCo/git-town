@@ -1,5 +1,6 @@
 .claude/*.local.*
 dist/
+.idea/
 .vscode/
 git-town.exe
 git-town_*
